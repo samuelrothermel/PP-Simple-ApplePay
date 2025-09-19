@@ -105,6 +105,18 @@ function initializePayPal() {
 // Add Apple Pay initialization function
 function initializeApplePay() {
   try {
+    if (!window.ApplePaySession) {
+      console.error('This device does not support Apple Pay');
+      document.getElementById('applepay-section').style.display = 'none';
+      return;
+    }
+
+    if (!ApplePaySession.canMakePayments()) {
+      console.error('This device is not capable of making Apple Pay payments');
+      document.getElementById('applepay-section').style.display = 'none';
+      return;
+    }
+
     const applepay = paypal.Applepay();
 
     applepay
@@ -114,17 +126,33 @@ function initializeApplePay() {
           const applePayContainer =
             document.getElementById('applepay-container');
           if (applePayContainer) {
+            // Remove placeholder
+            const placeholder = document.getElementById('applepay-placeholder');
+            if (placeholder) {
+              placeholder.remove();
+            }
+
+            // Create the Apple Pay button using the recommended approach
             applePayContainer.innerHTML =
               '<apple-pay-button id="btn-appl" buttonstyle="black" type="buy" locale="en"></apple-pay-button>';
 
             const applePayButton = document.getElementById('btn-appl');
             if (applePayButton) {
               applePayButton.addEventListener('click', () => {
-                startApplePaySession(applepay);
+                startApplePaySession(applepay, applepayConfig);
               });
+              console.log('Apple Pay button created and ready');
+            } else {
+              console.error(
+                'Apple Pay button element not found after creation'
+              );
+              // Show error message instead of placeholder
+              applePayContainer.innerHTML =
+                '<div style="padding: 10px; background: #ffe6e6; border: 1px solid #ff9999; border-radius: 4px;">Apple Pay button failed to load</div>';
             }
           }
         } else {
+          console.log('Apple Pay not eligible');
           document.getElementById('applepay-section').style.display = 'none';
         }
       })
@@ -139,22 +167,26 @@ function initializeApplePay() {
 }
 
 // Start Apple Pay session with proper callbacks
-function startApplePaySession(applepay) {
+function startApplePaySession(applepay, applepayConfig) {
   const amount = document.getElementById('amount-input').value || '10.00';
 
+  // Use configuration values from the applepay config
   const request = {
-    countryCode: 'US',
+    countryCode: applepayConfig.countryCode,
+    merchantCapabilities: applepayConfig.merchantCapabilities,
+    supportedNetworks: applepayConfig.supportedNetworks,
     currencyCode: 'USD',
-    supportedNetworks: ['visa', 'masterCard', 'amex', 'discover'],
-    merchantCapabilities: ['supports3DS'],
+    requiredShippingContactFields: ['name', 'phone', 'email', 'postalAddress'],
+    requiredBillingContactFields: ['postalAddress'],
     total: {
       label: 'PayPal Checkout Demo',
-      amount: amount,
       type: 'final',
+      amount: amount,
     },
   };
 
-  const session = new ApplePaySession(3, request);
+  // Create the session with version 4 as in the PayPal documentation
+  const session = new ApplePaySession(4, request);
 
   // Handle merchant validation
   session.onvalidatemerchant = event => {
@@ -171,7 +203,9 @@ function startApplePaySession(applepay) {
         session.abort();
         displayOrderInfo(
           'Apple Pay Error',
-          `Merchant validation failed: ${validateError.message}`
+          `Merchant validation failed: ${
+            validateError.message || 'Unknown error'
+          }`
         );
       });
   };
@@ -234,12 +268,16 @@ function startApplePaySession(applepay) {
       .catch(error => {
         console.error('Apple Pay payment error:', error);
         session.completePayment(ApplePaySession.STATUS_FAILURE);
-        displayOrderInfo('Apple Pay Error', `Payment failed: ${error.message}`);
+        displayOrderInfo(
+          'Apple Pay Error',
+          `Payment failed: ${error.message || 'Unknown error'}`
+        );
       });
   };
 
   // Handle payment cancellation
   session.oncancel = event => {
+    console.log('Apple Pay session cancelled');
     displayOrderInfo('Apple Pay Cancelled', 'User cancelled Apple Pay');
   };
 
