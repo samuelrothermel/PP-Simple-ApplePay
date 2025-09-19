@@ -49,6 +49,12 @@ function initializePayPal() {
     })
     .render('#paypal-button-container');
 
+  // Hide Apple Pay section by default
+  const applePaySection = document.getElementById('applepay-section');
+  if (applePaySection) {
+    applePaySection.style.display = 'none';
+  }
+
   // Initialize Apple Pay (if supported)
   if (
     paypal.Applepay &&
@@ -56,12 +62,6 @@ function initializePayPal() {
     ApplePaySession.canMakePayments()
   ) {
     initializeApplePay();
-  } else {
-    // Hide Apple Pay section if not supported
-    const applePaySection = document.getElementById('applepay-section');
-    if (applePaySection) {
-      applePaySection.style.display = 'none';
-    }
   }
 
   // Initialize PayLater Messages
@@ -106,14 +106,12 @@ function initializePayPal() {
 function initializeApplePay() {
   try {
     if (!window.ApplePaySession) {
-      console.error('This device does not support Apple Pay');
-      document.getElementById('applepay-section').style.display = 'none';
+      console.log('This device does not support Apple Pay');
       return;
     }
 
     if (!ApplePaySession.canMakePayments()) {
-      console.error('This device is not capable of making Apple Pay payments');
-      document.getElementById('applepay-section').style.display = 'none';
+      console.log('This device is not capable of making Apple Pay payments');
       return;
     }
 
@@ -126,13 +124,7 @@ function initializeApplePay() {
           const applePayContainer =
             document.getElementById('applepay-container');
           if (applePayContainer) {
-            // Remove placeholder
-            const placeholder = document.getElementById('applepay-placeholder');
-            if (placeholder) {
-              placeholder.remove();
-            }
-
-            // Create the Apple Pay button using the recommended approach
+            // Create the Apple Pay button
             applePayContainer.innerHTML =
               '<apple-pay-button id="btn-appl" buttonstyle="black" type="buy" locale="en"></apple-pay-button>';
 
@@ -141,28 +133,17 @@ function initializeApplePay() {
               applePayButton.addEventListener('click', () => {
                 startApplePaySession(applepay, applepayConfig);
               });
-              console.log('Apple Pay button created and ready');
-            } else {
-              console.error(
-                'Apple Pay button element not found after creation'
-              );
-              // Show error message instead of placeholder
-              applePayContainer.innerHTML =
-                '<div style="padding: 10px; background: #ffe6e6; border: 1px solid #ff9999; border-radius: 4px;">Apple Pay button failed to load</div>';
             }
           }
         } else {
-          console.log('Apple Pay not eligible');
-          document.getElementById('applepay-section').style.display = 'none';
+          console.log('Apple Pay not eligible for this merchant');
         }
       })
       .catch(error => {
         console.error('Apple Pay config error:', error);
-        document.getElementById('applepay-section').style.display = 'none';
       });
   } catch (error) {
     console.error('Apple Pay initialization error:', error);
-    document.getElementById('applepay-section').style.display = 'none';
   }
 }
 
