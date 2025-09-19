@@ -33,8 +33,8 @@ A clean, simplified PayPal checkout implementation featuring PayPal buttons, App
 3. **Run Locally**
 
    ```bash
-   npm run dev    # Development with nodemon
-   npm start      # Production mode
+   npm run dev    # Local Development with nodemon
+   npm start      # For Render hosting
    ```
 
 4. **Visit** `http://localhost:8888`
@@ -88,11 +88,12 @@ BASE_URL=https://your-domain.com
 
 ### Apple Pay Domain Verification
 
-For production, Apple Pay requires domain verification:
+For testing, Apple Pay requires domain verification:
 
 1. Enable Apple Pay in PayPal Developer Dashboard
 2. Add your domain to Apple Pay settings
-3. Upload domain verification file (handled automatically by this app)
+3. Replace domain verification file (handled automatically by this app)
+4. Complete domain registration via PayPal Business Dashboard
 
 ## Project Structure
 
