@@ -53,9 +53,9 @@ body {
   margin-bottom: 20px;
 }
 
-/* Apple Pay Button Styles - Per Apple's requirements */
+/* Apple Pay Button Styles */
 #applepay-container {
-  margin: 20px 0;
+  margin: 0 0 20px 0;
   text-align: center;
   min-height: 60px;
 }
@@ -65,21 +65,14 @@ apple-pay-button {
   appearance: -apple-pay-button;
   -apple-pay-button-type: buy;
   -apple-pay-button-style: black;
-  width: 200px;
+  width: 100%;
   height: 50px;
   display: inline-block;
   cursor: pointer;
 }
 
 #applepay-section {
-  min-height: 80px;
-}
-
-#applepay-section h3 {
-  color: #333;
-  margin-bottom: 15px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid #eee;
+  min-height: 60px;
 }
 .card-section {
   background: #f8f9fa;
