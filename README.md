@@ -17,7 +17,7 @@ A clean, simplified PayPal checkout implementation featuring PayPal buttons, App
 
    ```bash
    git clone <repository-url>
-   cd PP-Simple
+   cd pp-simple
    npm install
    ```
 
@@ -76,6 +76,17 @@ Apple Pay requires:
 
 Use PayPal's sandbox test cards for card payment testing.
 
+### Test Venmo
+
+Use the below Sandbox Venmo accounts to test Venmo payments.
+
+pwv-test-user2 / VenmoP@y12345
+pwv-test-user3 / VenmoP@y12345
+
+Rules:
+Do not change the email, phone number, or reset the password.
+Do not enable "Remember this device" or multi-factor authentication (MFA).
+
 ## Deployment
 
 ### Environment Variables (Production)
@@ -92,7 +103,7 @@ For testing, Apple Pay requires domain verification:
 
 1. Enable Apple Pay in PayPal Developer Dashboard
 2. Add your domain to Apple Pay settings
-3. Replace domain verification file (handled automatically by this app)
+3. Replace the current domain verification file
 4. Complete domain registration via PayPal Business Dashboard
 
 ## Project Structure
