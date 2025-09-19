@@ -56,6 +56,12 @@ function initializePayPal() {
     ApplePaySession.canMakePayments()
   ) {
     initializeApplePay();
+  } else {
+    // Hide Apple Pay section if not supported
+    const applePaySection = document.getElementById('applepay-section');
+    if (applePaySection) {
+      applePaySection.style.display = 'none';
+    }
   }
 
   // Initialize PayLater Messages
