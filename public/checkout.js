@@ -49,12 +49,6 @@ function initializePayPal() {
     })
     .render('#paypal-button-container');
 
-  // Hide Apple Pay section by default
-  const applePaySection = document.getElementById('applepay-section');
-  if (applePaySection) {
-    applePaySection.style.display = 'none';
-  }
-
   // Initialize Apple Pay (if supported)
   if (
     paypal.Applepay &&
@@ -62,6 +56,12 @@ function initializePayPal() {
     ApplePaySession.canMakePayments()
   ) {
     initializeApplePay();
+  } else {
+    // Hide Apple Pay section if not supported
+    const applePaySection = document.getElementById('applepay-section');
+    if (applePaySection) {
+      applePaySection.style.display = 'none';
+    }
   }
 
   // Initialize PayLater Messages
@@ -105,6 +105,12 @@ function initializePayPal() {
 // Add Apple Pay initialization function
 function initializeApplePay() {
   try {
+    // Hide Apple Pay section by default - will only show if everything passes
+    const applePaySection = document.getElementById('applepay-section');
+    if (applePaySection) {
+      applePaySection.style.display = 'none';
+    }
+
     if (!window.ApplePaySession) {
       console.log('This device does not support Apple Pay');
       return;
@@ -133,6 +139,11 @@ function initializeApplePay() {
               applePayButton.addEventListener('click', () => {
                 startApplePaySession(applepay, applepayConfig);
               });
+
+              // Only show the section if everything is successful
+              if (applePaySection) {
+                applePaySection.style.display = 'block';
+              }
             }
           }
         } else {
