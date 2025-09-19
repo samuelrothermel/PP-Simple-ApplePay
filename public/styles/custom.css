@@ -57,24 +57,50 @@ body {
 #applepay-container {
   margin: 20px 0;
   text-align: center;
+  min-height: 60px;
+  background: transparent;
 }
 
 apple-pay-button {
-  --apple-pay-button-width: 100%;
+  --apple-pay-button-width: 280px;
   --apple-pay-button-height: 50px;
   --apple-pay-button-border-radius: 8px;
-  --apple-pay-button-padding: 0px 0px;
-  width: 100%;
-  height: 50px;
-  border-radius: 8px;
-  cursor: pointer;
-  display: block;
-  margin: 0 auto;
+  --apple-pay-button-padding: 0px;
+
+  /* Critical: These properties ensure the button is visible */
+  width: 280px !important;
+  height: 50px !important;
+  min-width: 280px !important;
+  min-height: 50px !important;
+  max-width: 100% !important;
+
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  position: relative !important;
+
+  border: none !important;
+  outline: none !important;
+  background: transparent !important;
+
+  margin: 10px auto !important;
+  cursor: pointer !important;
+
+  /* Ensure it's not clipped or hidden */
+  overflow: visible !important;
+  clip: auto !important;
+  z-index: 10 !important;
 }
 
-/* Ensure Apple Pay section visibility */
+/* Force visibility in all conditions */
+apple-pay-button:not([hidden]) {
+  display: inline-block !important;
+}
+
+/* Ensure container doesn't hide the button */
 #applepay-section {
-  min-height: 60px;
+  min-height: 80px !important;
+  overflow: visible !important;
 }
 
 #applepay-section h3 {
